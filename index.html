@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Clicker God-Engine</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div id="star-container"></div>
+    <div id="dimensional-nexus">
+        <div id="navigation-tree">
+            <h1 class="nav-title">God-Engine</h1>
+            <button class="nav-button active" data-target="bakery">The Bakery</button>
+            <button class="nav-button" data-target="research">Research</button>
+            <button class="nav-button" data-target="star-map">Star Map</button>
+            <button class="nav-button" data-target="ascension">Ascension</button>
+        </div>
+        <div id="main-content">
+            <div class="content-pane active" id="bakery">
+                <!-- The original clicker game will go here -->
+                <div class="game-area">
+                    <button id="clicker">Bake Universe</button>
+                </div>
+            </div>
+            <div class="content-pane" id="research">
+                <h2>Research & Development</h2>
+                <div id="tech-tree-container">
+                    <!-- The infinite tech tree will be rendered here -->
+                </div>
+            </div>
+            <div class="content-pane" id="star-map">
+                <h2>Galactic Star Map</h2>
+                <!-- The interactive star map will go here -->
+            </div>
+            <div class="content-pane" id="ascension">
+                <h2>Ascension</h2>
+                <!-- The prestige system will go here -->
+            </div>
+        </div>
+        <div id="resource-pane">
+            <h2>Resources</h2>
+            <div id="resource-list">
+                <!-- Resources will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/state.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/upgrades.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/engine.js"></script>
+</body>
+</html>
