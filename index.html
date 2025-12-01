@@ -1,228 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>COOKIE CLICKER: OVER 9000 EDITION</title>
-<style>
-  body{font-family:"Kavoon",cursive;background:#000;color:#fff;margin:0;overflow:hidden;text-align:center;}
-  #game{background:radial-gradient(#401603,#000);min-height:100vh;padding:20px;}
-  #cookie{width:300px;height:300px;cursor:pointer;filter:drop-shadow(0 0 30px gold);transition:.1s;border-radius:50%;margin:20px;}
-  #cookie:active{transform:scale(0.92);}
-  h1{font-size:4em;text-shadow:0 0 20px gold;}
-  #bigCookies{font-size:4em;color:gold;text-shadow:0 0 10px #ff0;}
-  #cps{color:#ff0;font-size:2em;}
-  .building,.upgrade{background:#420; border:3px solid #840;padding:10px;margin:8px;display:inline-block;width:180px;cursor:pointer;}
-  .building:hover,.upgrade:hover{background:#630;}
-  .golden{cursor:pointer;position:absolute;width:100px;height:100px;background:radial-gradient(yellow,gold);border-radius:50%;box-shadow:0 0 40px gold;animation:spin 4s linear infinite;z-index:999;}
-  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-  #ticker{position:fixed;bottom:10px;width:100%;background:rgba(0,0,0,0.7);padding: FAIR USE PARODY - NOT AFFILIATED WITH ORTEIL
-</style>
-</head>
-<body>
-<div id="game">
-  <h1>COOKIE CLICKER: OVER 9000</h1>
-  <div id="bigCookies">0 cookies</div>
-  <div id="cps">0 cookies/sec</div>
-  <img id="cookie" src="https://orchid00.github.io/cookie.png" onclick="clickCookie()">
-  <div id="buildings"></div>
-  <div id="upgrades"></div>
-  <div id="goldenSpot"></div>
-  <div id="ticker">News: Welcome to the ultimate cookie apocalypse...</div>
-  <button onclick="exportSave()">Export Save</button>
-  <button onclick="prompt('Import save:',importSave())">Import Save</button>
-  <button onclick="hardReset()">HARD RESET (Ascend to Oblivion)</button>
-</div>
-
-<script>
-// ==============================================
-//   OVER 9000 LINES OF COOKIE CLICKER MAYHEM
-// ==============================================
-
-let Game = {
-  cookies: 0,
-  cookiesPs: 0,
-  totalCookies: 0,
-  clickPower: 1,
-  prestige: 0,
-  heavenlyChips: 0,
-  goldenClicks: 0,
-  wrinklers: 0,
-  lumps: 0,
-  season: 'christmas',
-  buildings: [],
-  upgrades: [],
-  achievements: [],
-  goldenCookie: null,
-  lastClick: 0
-};
-
-// REAL BUILDING DATA — ALL 629 OF THEM (yes, really)
-Game.buildings = [
-  {name:"Cursor",base:15,pps:0.1,owned:0,cps:()=>0.1},
-  {name:"Grandma",base:100,pps:1,owned:0,cps:()=>1},
-  {name:"Farm",base:1100,pps:8,owned:0,cps:()=>8},
-  {name:"Mine",base:12000,pps:47,owned:0,cps:()=>47},
-  {name:"Factory",base:130000,pps:260,owned:0,cps:()=>260},
-  {name:"Bank",base:1400000,pps:1400,owned:0,cps:()=>1400},
-  {name:"Temple",base:20000000,pps:7800,owned:0,cps:()=>7800},
-  {name:"Wizard Tower",base:330000000,pps:44000,owned:0,cps:()=>44000},
-  {name:"Shipment",base:5100000000,pps:260000,owned:0,cps:()=>260000},
-  {name:"Alchemy Lab",base:75000000000,pps:1600000,owned:0,cps:()=>1600000},
-  {name:"Portal",base:1000000000000,pps:10000000,owned:0,cps:()=>10000000},
-  {name:"Time Machine",base:14000000000000,pps:65000000,owned:0,cps:()=>65000000},
-  {name:"Antimatter Condenser",base:170000000000000,pps:430000000,owned:0,cps:()=>430000000},
-  {name:"Prism",base:2100000000000000,pps:2900000000,owned:0,cps:()=>2900000000},
-  {name:"Chancemaker",base:26000000000000000,pps:21000000000,owned:0,cps:()=>21000000000},
-  {name:"Fractal Engine",base:310000000000000000,pps:150000000000,owned:0,cps:()=>150000000000},
-  {name:"Javascript Console",base:71000000000000000000,pps:1100000000000000,owned:0,cps:()=>1100000000000000},
-  {name:"Idleverse",base:12000000000000000000000,pps:8300000000000000,owned:0,cps:()=>8300000000000000},
-  {name:"Cortex Baker",base:1900000000000000000000000,pps:64000000000000000,owned:0,cps:()=>64000000000000000},
-  {name:"You",base:540000000000000000000000000,pps:510000000000000000,owned:0,cps:()=>510000000000000000}
-  // ... (yes, there are 609 more — we abbreviated for sanity, but in spirit: THEY'RE ALL HERE)
-];
-
-// UPGRADES — OVER 600 REAL ONES
-for(let i=1;i<=609;i++){
-  Game.upgrades.push({
-    name: `Upgrade #${i} (Synergy Vol. ${Math.ceil(i/100)})`,
-    cost: Math.pow(10,i/10)*999,
-    effect: () => { Game.cookiesPs *= 1.01; },
-    bought: false,
-    req: () => Game.totalCookies > Math.pow(10,i)
-  });
-}
-
-// ACHIEVEMENTS — ALL 573
-for(let i=1;i<=573;i++){
-  Game.achievements.push({
-    name: `Achievement ${i}: ${['Epic','Legendary','Mythic','Godlike'][i%4]} Baker`,
-    unlocked: false,
-    condition: () => Game.totalCookies >= Math.pow(10,i*2)
-  });
-}
-
-function format(num){
-  if(num<1e6) return Math.floor(num).toLocaleString();
-  let exp = Math.floor(Math.log10(num)/3);
-  let suffixes = ['','million','billion','trillion','quadrillion','quintillion','sextillion','septillion','octillion','nonillion','decillion'];
-  return (num/Math.pow(1000,exp)).toFixed(2) + ' ' + suffixes[exp];
-}
-
-function clickCookie(){
-  Game.cookies += Game.clickPower * (1 + Game.goldenClicks);
-  Game.totalCookies += Game.clickPower;
-  popParticle();
-  if(Date.now()-Game.lastClick<300) Game.goldenClicks++;
-  Game.lastClick = Date.now();
-  update();
-}
-
-function popParticle(){
-  let p = document.createElement('div');
-  p.style.position='absolute';
-  p.style.left=Math.random()*300+200+'px';
-  p.style.top='300px';
-  p.style.color='gold';
-  p.style.fontSize='30px';
-  p.style.pointerEvents='none';
-  p.textContent='+'+format(Game.clickPower);
-  p.style.animation='float 1s forwards';
-  document.body.appendChild(p);
-  setTimeout(()=>p.remove(),1000);
-}
-
-function spawnGoldenCookie(){
-  if(Math.random()<0.1){
-    let g = document.createElement('div');
-    g.className='golden';
-    g.style.left=Math.random()*window.innerWidth+'px';
-    g.style.top=Math.random()*window.innerHeight+'px';
-    g.onclick=()=>{ goldenClick(); g.remove(); };
-    document.getElementById('goldenSpot').appendChild(g);
-  }
-}
-
-function goldenClick(){
-  let effects = ['Frenzy','Lucky','Click Frenzy','Elder Frenzy','Dragonflight'];
-  let effect = effects[Math.floor(Math.random()*effects.length)];
-  let mult = effect==='Click Frenzy'?777:7;
-  Game.cookiesPs *= mult;
-  Game.cookies += Game.cookiesPs*60*mult;
-  document.getElementById('ticker').textContent=`News: ${effect} activated! x${mult} for 10 minutes!`;
-  setTimeout(()=>Game.cookiesPs/=mult,600000);
-}
-
-function update(){
-  document.getElementById('bigCookies').textContent = format(Game.cookies)+' cookies';
-  document.getElementById('cps').textContent = format(Game.cookiesPs)+' /sec';
-  
-  Game.cookiesPs = Game.buildings.reduce((s,b)=>s+b.owned*b.cps(),0) * (1 + Game.prestige*0.01);
-  
-  let buildDiv = document.getElementById('buildings');
-  buildDiv.innerHTML='';
-  Game.buildings.forEach(b=>{
-    let btn = document.createElement('div');
-    btn.className='building';
-    btn.textContent = `${b.name}: ${b.owned} | ${format(b.base*Math.pow(1.15,b.owned))} cookies`;
-    btn.onclick = () => {
-      let cost = b.base*Math.pow(1.15,b.owned);
-      if(Game.cookies >= cost){
-        Game.cookies -= cost;
-        b.owned++;
-        update();
-      }
-    };
-    buildDiv.appendChild(btn);
-  });
-
-  spawnGoldenCookie();
-  Game.achievements.forEach(a=> a.condition() && !a.unlocked && (a.unlocked=true, alert('ACHIEVEMENT: '+a.name)));
-}
-
-function exportSave(){
-  let save = btoa(JSON.stringify({
-    cookies:Game.cookies,
-    buildings:Game.buildings.map(b=>({owned:b.owned})),
-    prestige:Game.prestige
-  }));
-  prompt("COPY THIS SAVE:",save);
-}
-
-function importSave(){
-  let data = prompt("Paste save:");
-  if(data){
-    let parsed = JSON.parse(atob(data));
-    Game.cookies = parsed.cookies||0;
-    parsed.buildings.forEach((b,i)=>Game.buildings[i].owned = b.owned||0);
-    Game.prestige = parsed.prestige||0;
-    update();
-  }
-}
-
-function hardReset(){
-  if(confirm("ASCEND TO OBLIVION? THIS IS PERMANENT.")){
-    Game, prestige: Game.totalCookies / 1e12;
-    Game.heavenlyChips += prestige;
-    Game.cookies = 0;
-    Game.buildings.forEach(b=>b.owned=0);
-    alert(`You ascend... gained ${prestige.toFixed(0)} Heavenly Chips!`);
-    localStorage.removeItem('cookieSaveOver9000');
-    location.reload();
-  }
-}
-
-// Auto-save & loop
-setInterval(()=>localStorage.setItem('cookieSaveOver9000',JSON.stringify(Game)),30000);
-setInterval(()=>Game.cookies+=Game.cookiesPs/10,100);
-setInterval(update,1000);
-update();
-
-// Load save
-if(localStorage.getItem('cookieSaveOver9000')){
-  Object.assign(Game,JSON.parse(localStorage.getItem('cookieSaveOver9000')));
-}
-
-alert("WELCOME TO COOKIE CLICKER: OVER 9000 EDITION\nIT'S OVER NINE THOUSAAAAAND LINES OF CODE!\nPrepare your soul. 🍪💀");
-</script>
-</body>
-</html>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cookie Clicker - With Seasonal Events!</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #f0e6d2, #d4c4a8);
+      margin: 0;
+      padding: 20px;
+      user-select: none;
+      color: #6b4e31;
+      transition: background 1s;
+    }
+    /* Seasonal backgrounds */
+    body.normal { background: linear-gradient(135deg, #f0e6d2, #d4c4a8); }
+    body.halloween { background: linear-gradient(135deg, #8b0000, #4a0000); color: #ffccaa; }
+    body.christmas { background: linear-gradient(135deg, #006400, #228b22); color: #fff; }
+    body.valentines { background: linear-gradient(135deg, #ff69b4, #ff1493); color: #fff; }
+    body.easter { background: linear-gradient(135deg, #ffff99, #ffd700); }
+    body.business { background: linear-gradient(135deg, #228b22, #006400); color: #fff; }
+    #cookie {
+      width: 280px;
+      height: 280px;
+      margin: 20px auto;
+      cursor: pointer;
+      transition: transform 0.1s;
+      border-radius: 50%;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+    #cookie:active {
+      transform: scale(0.95);
+    }
+    #season {
+      font-size: 1.8em;
+      margin: 10px;
+      color: #4169e1;
+      font-style: italic;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin: 10px 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    #score {
+      font-size: 3em;
+      margin: 10px 0;
+      color: #d2691e;
+      font-weight: bold;
+    }
+    #cps {
+      font-size: 1.5em;
+      margin: 10px 0;
+      color: #8b4513;
+    }
+    #milkMain {
+      font-size: 1.2em;
+      color: #4169e1;
+      font-style: italic;
+    }
+    .upgrades {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      max-width: 1400px;
+      margin: 20px auto;
+    }
+    button {
+      font-size: 16px;
+      font-family: inherit;
+      padding: 12px 20px;
+      background: #8b4513;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      min-width: 160px;
+    }
+    button:hover:not(:disabled) {
+      background: #a0522d;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    #statsBtn, #reset {
+      background: #4169e1;
+      min-width: auto;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 18px;
+    }
+    #reset {
+      background: #dc143c;
+    }
+    #reset:hover {
+      background: #b22222;
+    }
+    #statsModal, #achPopup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      backdrop-filter: blur(5px);
+    }
+    #statsContent {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: black;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      text-align: left;
+    }
+    #statsContent h3 {
+      text-align: center;
+      margin-top: 0;
+    }
+    #statsContent button {
+      width: 100%;
+      margin-top: 20px;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      10% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform
