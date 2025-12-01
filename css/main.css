@@ -88,6 +88,14 @@ body {
     to { opacity: 1; }
 }
 
+#galaxy-canvas {
+    width: 100%;
+    height: calc(100% - 4rem); /* Adjust for the heading */
+    background-color: #000;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
 #resource-pane {
     background-color: var(--bg-secondary);
     border-left: 1px solid var(--border-color);
@@ -179,4 +187,21 @@ body {
 @keyframes twinkle {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }
+}
+
+/* Floating Number Styling */
+.floating-number {
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--accent-secondary);
+    text-shadow: 0 0 5px var(--accent-secondary);
+    pointer-events: none;
+    animation: floatUp 1s forwards;
+}
+
+@keyframes floatUp {
+    to {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
 }
