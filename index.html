@@ -1,56 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Clicker God-Engine</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real Cookie Clicker - Achievements!</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #f0e6d2, #d4c4a8);
+      margin: 0;
+      padding: 20px;
+      user-select: none;
+      color: #6b4e31;
+    }
+    #cookie {
+      width: 280px;
+      height: 280px;
+      margin: 20px auto;
+      cursor: pointer;
+      transition: transform 0.1s;
+      border-radius: 50%;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+    #cookie:active {
+      transform: scale(0.95);
+    }
+    h1 {
+      font-size: 2.5em;
+      margin: 10px 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    #score {
+      font-size: 3em;
+      margin: 10px 0;
+      color: #d2691e;
+      font-weight: bold;
+    }
+    #cps {
+      font-size: 1.5em;
+      margin: 10px 0;
+      color: #8b4513;
+    }
+    #milkMain {
+      font-size: 1.2em;
+      color: #4169e1;
+      font-style: italic;
+    }
+    .upgrades {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      max-width: 1400px;
+      margin: 20px auto;
+    }
+    button {
+      font-size: 16px;
+      font-family: inherit;
+      padding: 12px 20px;
+      background: #8b4513;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      min-width: 160px;
+    }
+    button:hover:not(:disabled) {
+      background: #a0522d;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    #statsBtn, #reset {
+      background: #4169e1;
+      min-width: auto;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 18px;
+    }
+    #reset {
+      background: #dc143c;
+    }
+    #reset:hover {
+      background: #b22222;
+    }
+    #statsModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      backdrop-filter: blur(5px);
+    }
+    #statsContent {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: black;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      text-align: left;
+    }
+    #statsContent h3 {
+      text-align: center;
+      margin-top: 0;
+    }
+    #statsContent button {
+      width: 100%;
+      margin-top: 20px;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      10% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    }
+    #achPopup {
+      position: fixed !important;
+      top: 20% !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      background: linear-gradient(gold, orange) !important;
+      color: black !important;
+      padding: 30px !important;
+      border-radius: 20px !important;
+      z-index: 1000 !important;
+      font-size: 28px !important;
+      font-weight: bold !important;
+      box-shadow: 0 0 50px gold !important;
+      pointer-events: none !important;
+      animation: fadeInOut 4s forwards !important;
+    }
+  </style>
 </head>
 <body>
-    <div id="star-container"></div>
-    <div id="dimensional-nexus">
-        <div id="navigation-tree">
-            <h1 class="nav-title">God-Engine</h1>
-            <button class="nav-button active" data-target="bakery">The Bakery</button>
-            <button class="nav-button" data-target="research">Research</button>
-            <button class="nav-button" data-target="star-map">Star Map</button>
-            <button class="nav-button" data-target="ascension">Ascension</button>
-        </div>
-        <div id="main-content">
-            <div class="content-pane active" id="bakery">
-                <!-- The original clicker game will go here -->
-                <div class="game-area">
-                    <button id="clicker">Bake Universe</button>
-                </div>
-            </div>
-            <div class="content-pane" id="research">
-                <h2>Research & Development</h2>
-                <div id="tech-tree-container">
-                    <!-- The infinite tech tree will be rendered here -->
-                </div>
-            </div>
-            <div class="content-pane" id="star-map">
-                <h2>Galactic Star Map</h2>
-                <canvas id="galaxy-canvas"></canvas>
-            </div>
-            <div class="content-pane" id="ascension">
-                <h2>Ascension</h2>
-                <!-- The prestige system will go here -->
-            </div>
-        </div>
-        <div id="resource-pane">
-            <h2>Resources</h2>
-            <div id="resource-list">
-                <!-- Resources will be dynamically added here -->
-            </div>
-        </div>
-    </div>
+  <h1>🍪 Cookie Clicker 🍪</h1>
+  <div id="score">0 cookies</div>
+  <div id="cps">0.00 cookies/second</div>
+  <div id="milkMain">Milk: 0%</div>
 
-    <script src="js/state.js"></script>
-    <script src="js/resources.js"></script>
-    <script src="js/upgrades.js"></script>
-    <script src="js/galaxy.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/engine.js"></script>
+  <img id="cookie" src="https://i.imgur.com/o3q8z3s.png" alt="Click for cookies!">
+
+  <div class="upgrades" id="upgrades"></div>
+
+  <button id="statsBtn">📊 Stats</button>
+  <button id="reset">Wipe Save</button>
+
+  <div id="statsModal">
+    <div id="statsContent">
+      <h3>Stats</h3>
+      <p>Total baked: <span id="totalBakedDisp">0</span></p>
+      <p>From manual clicks: <span id="clicksDisp">0</span></p>
+      <p>Achievements: <span id="achCountDisp">0</span> / <span id="totalAchDisp">0</span></p>
+      <p>Milk: <span id="milkDisp">0%</span></p>
+      <button onclick="document.getElementById('statsModal').style.display='none'">Close</button>
+    </div>
+  </div>
+
+  <script>
+    let cookies = 0;
+    let baseCps = 0;
+    let cps = 0;
+    let totalBaked = 0;
+    let manualClicks = 0;
+    let lastTime = performance.now();
+
+    const buildings = [
+      {name: 'Cursor', baseCost: 15, cps: 0.1, owned: 0, id: 'cursor'},
+      {name: 'Grandma', baseCost: 100, cps: 1, owned: 0, id: 'grandma'},
+      {name: 'Farm', baseCost: 1100, cps: 8, owned: 0, id: 'farm'},
+      {name: 'Mine', baseCost: 12000, cps: 47, owned: 0, id: 'mine'},
+      {name: 'Factory', baseCost: 130000, cps: 260, owned: 0, id: 'factory'},
+      {name: 'Bank', baseCost: 1400000, cps: 1400, owned: 0, id: 'bank'},
+      {name: 'Temple', baseCost: 20000000, cps: 7800, owned: 0, id: 'temple'},
+      {name: 'Wizard Tower', baseCost: 330000000, cps: 44000, owned: 0, id: 'wizardtower'},
+      {name: 'Shipment', baseCost: 5100000000, cps: 260000, owned: 0, id: 'shipment'},
+      {name: 'Alchemy Lab', baseCost: 75000000000, cps: 1600000, owned: 0, id: 'alchemylab'},
+      {name: 'Portal', baseCost: 1000000000000, cps: 10000000, owned: 0, id: 'portal'},
+      {name: 'Time Machine', baseCost: 14000000000000, cps: 65000000, owned: 0, id: 'timemachine'},
+      {name: 'Antimatter Condenser', baseCost: 170000000000000, cps: 430000000, owned: 0, id: 'antimattercondenser'},
+      {name: 'Prism', baseCost: 2100000000000000, cps: 2900000000, owned: 0, id: 'prism'},
+      {name: 'Chancemaker', baseCost: 26000000000000000, cps: 21000000000, owned: 0, id: 'chancemaker'},
+      {name: 'Fractal Engine', baseCost: 310000000000000000, cps: 150000000000, owned: 0, id: 'fractalengine'},
+      {name: 'Javascript Console', baseCost: 71000000000000000000, cps: 1100000000000000, owned: 0, id: 'javascriptconsole'},
+      {name: 'Idleverse', baseCost: 12000000000000000000000, cps: 8300000000000000, owned: 0, id: 'idleverse'},
+      {name: 'Cortex Baker', baseCost: 1900000000000000000000000, cps: 64000000000000000, owned: 0, id: 'cortexbaker'},
+      {name: 'You', baseCost: 540000000000000000000000000, cps: 510000000000000000, owned: 0, id: 'you'}
+    ];
+
+    const achievements = [
+      // Baked milestones
+      {name: 'Wake and bake', condition: () => totalBaked >= 1},
+      {name: 'Making some dough', condition: () => totalBaked >= 1000},
+      {name: 'So baked right now', condition: () => totalBaked >= 100000},
+      {name: 'Fledgling bakery', condition: () => totalBaked >= 1000000},
+      {name: 'Affluent bakery', condition: () => totalBaked >= 100000000},
+      {name: 'World-famous bakery', condition: () => totalBaked >= 1000000000},
+      {name: 'Cosmic bakery', condition: () => totalBaked >= 100000000000},
+      {name: 'Galactic bakery', condition: () => totalBaked >= 1000000000000},
+      {name: 'Universal bakery', condition: () => totalBaked >= 100000000000000},
+      {name: 'Timeless bakery', condition: () => totalBaked >= 1000000000000000},
+      // CPS
+      {name: 'Casual baking', condition: () => cps >= 1},
+      {name: 'Hardcore baking', condition: () => cps >= 10},
+      {name: 'Steady tasty stream', condition: () => cps >= 100},
+      {name: 'Cookie monster', condition: () => cps >= 1000},
+      {name: 'Mass producer', condition: () => cps >= 10000},
+      {name: 'Cookie vortex', condition: () => cps >= 1000000},
+      {name: 'Cookie pulsar', condition: () => cps >= 10000000},
+      {name: 'Cookie quasar', condition: () => cps >= 100000000},
+      {name: 'Oh hey, you\'re still here', condition: () => cps >= 1000000000},
+      {name: 'Let\'s never bake again', condition: () => cps >= 10000000000},
+      // Clicks
+      {name: 'Clicktastic', condition: () => manualClicks >= 1000},
+      {name: 'Clickathlon', condition: () => manualClicks >= 100000},
+      {name: 'Clickolympics', condition: () => manualClicks >= 10000000},
+      {name: 'Clickorama', condition: () => manualClicks >= 1000000000},
+      // Total buildings
+      {name: 'Builder', condition: () => buildings.reduce((s, b) => s + b.owned, 0) >= 100},
+      {name: 'Architect', condition: () => buildings.reduce((s, b) => s + b.owned, 0) >= 500},
+      {name: 'Engineer', condition: () => buildings.reduce((s, b) => s + b.owned, 0) >= 1000},
+      {name: 'Lord of Constructs', condition: () => buildings.reduce((s, b) => s + b.owned, 0) >= 2500},
+      {name: 'Grand design', condition: () => buildings.reduce((s, b) => s + b.owned, 0) >= 5000},
+      // Special
+      {name: 'One with everything', condition: () => buildings.every(b => b.owned >= 1)},
+      {name: 'Mathematician', condition: () => {
+        let sorted = [...buildings].sort((a, b) => b.baseCost - a.baseCost);
+        let req = 1;
+        for (let b of sorted) {
+          if (b.owned < req) return false;
+          req = Math.min(req * 2, 128);
+        }
+        return true;
+      }},
+      {name: 'Base 10', condition: () => {
+        let sorted = [...buildings].sort((a, b) => b.baseCost - a.baseCost);
+        let req = 10;
+        for (let b of sorted) {
+          if (b.owned < req) return false;
+          req += 10;
+        }
+        return true;
+      }},
+      {name: 'Neverclick', condition: () => totalBaked >= 1000000 && manualClicks <= 15},
+      // Own 1 of first buildings (real names)
+      {name: 'Click', condition: () => buildings[0].owned >= 1},
+      {name: "Grandma's cookies", condition: () => buildings[1].owned >= 1},
+      {name: 'Bought the farm', condition: () => buildings[2].owned >= 1},
+      {name: 'You know the drill', condition: () => buildings[3].owned >= 1},
+      {name: 'Production chain', condition: () => buildings[4].owned >= 1},
+      {name: 'Pretty penny', condition: () => buildings[5].owned >= 1},
+      {name: 'Zen temple', condition: () => buildings[6].owned >= 1},
+      {name: 'Summon the wizards', condition: () => buildings[7].owned >= 1},
+      {name: 'Expedition', condition: () => buildings[8].owned >= 1},
+      {name: 'The alchemist', condition: () => buildings[9].owned >= 1}
+    ];
+
+    const cookieImg = document.getElementById('cookie');
+    const scoreDisplay = document.getElementById('score');
+    const cpsDisplay = document.getElementById('cps');
+    const milkMain = document.getElementById('milkMain');
+    const upgradesDiv = document.getElementById('upgrades');
+    const resetBtn = document.getElementById('reset');
+    const statsBtn = document.getElementById('statsBtn');
+    const statsModal = document.getElementById('statsModal');
+
+    const SUFFIX = ['', ' thousand', ' million', ' billion', ' trillion', ' quadrillion', ' quintillion', ' sextillion', ' septillion'];
+
+    function formatCookie(num) {
+      num = Math.floor(num);
+      if (num === 0) return '0';
+      const tier = Math.floor(Math.log10(Math.max(num, 1)) / 3);
+      const scale = Math.pow(1000, tier);
+      const scaled = num / scale;
+      return scaled.toPrecision(3) + SUFFIX[tier];
+    }
+
+    function formatCps(num) {
+      if (num === 0) return '0';
+      if (num < 1) return num.toFixed(2);
+      return formatCookie(num);
+    }
+
+    function getCost(building) {
+      return Math.floor(building.baseCost * Math.pow(1.15, building.owned));
+    }
+
+    function getBtnText(building) {
+      const cost = getCost(building);
+      const costStr = formatCookie(cost);
+      if (building.owned === 0) {
+        return `Buy ${building.name} - ${costStr}`;
+      } else {
+        const plural = building.name === 'You' ? 'you' : building.name.toLowerCase() + 's';
+        return `${building.owned} ${plural} - ${costStr}`;
+      }
+    }
+
+    function calcBaseCps() {
+      return buildings.reduce((sum, b) => sum + b.cps * b.owned, 0);
+    }
+
+    function getMilk() {
+      const unlocked = achievements.filter(a => a.unlocked).length;
+      return unlocked * 4;
+    }
+
+    function update() {
+      scoreDisplay.textContent = formatCookie(cookies) + ' cookies';
+      
+      baseCps = calcBaseCps();
+      const milkPercent = getMilk();
+      const milkMultiplier = 1 + (milkPercent / 100) * 0.2; // Mimics kitten effect
+      cps = baseCps * milkMultiplier;
+      
+      cpsDisplay.textContent = formatCps(cps) + ' per second';
+      milkMain.textContent = `Milk: ${milkPercent}%`;
+
+      // Stats modal updates
+      document.getElementById('totalBakedDisp').textContent = formatCookie(totalBaked);
+      document.getElementById('clicksDisp').textContent = formatCookie(manualClicks);
+      const unlockedAch = achievements.filter(a => a.unlocked).length;
+      document.getElementById('achCountDisp').textContent = unlockedAch;
+      document.getElementById('totalAchDisp').textContent = achievements.length;
+      document.getElementById('milkDisp').textContent = milkPercent + '%';
+
+      buildings.forEach(b => {
+        const btn = document.getElementById(b.id + 'Btn');
+        btn.textContent = getBtnText(b);
+        btn.disabled = cookies < getCost(b);
+      });
+
+      checkAchievements();
+    }
+
+    function checkAchievements() {
+      achievements.forEach(a => {
+        if (!a.unlocked && a.condition()) {
+          a.unlocked = true;
+          showAchievement(a.name);
+        }
+      });
+      saveGame();
+    }
+
+    function showAchievement(name) {
+      const div = document.createElement('div');
+      div.id = 'achPopup';
+      div.innerHTML = `<h2>🎉 Achievement Unlocked! 🎉</h2><p>${name}</p>`;
+      document.body.appendChild(div);
+      setTimeout(() => {
+        if (div.parentNode) div.remove();
+      }, 4000);
+    }
+
+    function buy(building) {
+      const cost = getCost(building);
+      if (cookies >= cost) {
+        cookies -= cost;
+        building.owned++;
+        update();
+      }
+    }
+
+    // Create buttons
+    buildings.forEach(b => {
+      const btn = document.createElement('button');
+      btn.id = b.id + 'Btn';
+      upgradesDiv.appendChild(btn);
+      btn.addEventListener('click', () => buy(b));
+    });
+
+    // Events
+    cookieImg.addEventListener('click', () => {
+      cookies += 1;
+      manualClicks++;
+      totalBaked++;
+      update();
+    });
+
+    statsBtn.addEventListener('click', () => {
+      statsModal.style.display = 'block';
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Wipe your save? This cannot be undone!')) {
+        localStorage.removeItem('ccSave');
+        location.reload();
+      }
+    });
+
+    // Load save
+    function loadGame() {
+      try {
+        const saveData = JSON.parse(localStorage.getItem('ccSave'));
+        cookies = saveData.cookies || 0;
+        totalBaked = saveData.totalBaked || 0;
+        manualClicks = saveData.manualClicks || 0;
+        saveData.buildings.forEach((data, i) => {
+          buildings[i].owned = data.owned || 0;
+        });
+        saveData.achievements.forEach((unlocked, i) => {
+          if (achievements[i]) achievements[i].unlocked = unlocked;
+        });
+      } catch (e) {
+        // No save
+      }
+    }
+
+    // Save game
+    function saveGame() {
+      const saveData = {
+        cookies: cookies,
+        totalBaked: totalBaked,
+        manualClicks: manualClicks,
+        buildings: buildings.map(b => ({owned: b.owned})),
+        achievements: achievements.map(a => a.unlocked)
+      };
+      localStorage.setItem('ccSave', JSON.stringify(saveData));
+    }
+
+    // Init
+    loadGame();
+    update();
+
+    // Game loop
+    function gameLoop() {
+      const now = performance.now();
+      const delta = (now - lastTime) / 1000;
+      const produced = cps * delta;
+      cookies += produced;
+      totalBaked += produced;
+      lastTime = now;
+      update();
+      requestAnimationFrame(gameLoop);
+    }
+    gameLoop();
+
+    // Auto-save every 10 seconds
+    setInterval(saveGame, 10000);
+  </script>
 </body>
 </html>
