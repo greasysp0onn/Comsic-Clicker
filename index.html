@@ -3,143 +3,393 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cookie Clicker - With Seasonal Events!</title>
+  <title>Cookie Clicker – 2025 Revamp Edition</title>
   <style>
+    :root {
+      --bg: #f9f0d8;
+      --text: #5d4037;
+      --accent: #d84315;
+      --button: #8d6e63;
+      --button-hover: #6d4c41;
+      --shadow: rgba(0,0,0,0.25);
+      --gold: #ffb300;
+      --milk: #4169e1;
+    }
     body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      text-align: center;
-      background: linear-gradient(135deg, #f0e6d2, #d4c4a8);
       margin: 0;
+      font-family: 'Kavoon', 'Comic Sans MS', cursive;
+      background: var(--bg);
+      color: var(--text);
+      text-align: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 1.5s ease;
+    }
+    body.christmas { --bg: #0a1f0f; --text: #ffdddd; --accent: #ff1744; --button: #c62828; }
+    body.halloween { --bg: #1a0033; --text: #ff9900; --accent: #ff6d00; --button: #6a1b9a; }
+    body.valentines { --bg: #ffebee; --text: #880e4f; --accent: #e91e63; --button: #ad1457; }
+    body.easter { --bg: #fff9c4; --text: #6a1b9a; --accent: #7e57c2; --button: #512da8; }
+
+    #game {
+      max-width: 1400px;
+      margin: 0 auto;
       padding: 20px;
-      user-select: none;
-      color: #6b4e31;
-      transition: background 1s;
-    }
-    /* Seasonal backgrounds */
-    body.normal { background: linear-gradient(135deg, #f0e6d2, #d4c4a8); }
-    body.halloween { background: linear-gradient(135deg, #8b0000, #4a0000); color: #ffccaa; }
-    body.christmas { background: linear-gradient(135deg, #006400, #228b22); color: #fff; }
-    body.valentines { background: linear-gradient(135deg, #ff69b4, #ff1493); color: #fff; }
-    body.easter { background: linear-gradient(135deg, #ffff99, #ffd700); }
-    body.business { background: linear-gradient(135deg, #228b22, #006400); color: #fff; }
-    #cookie {
-      width: 280px;
-      height: 280px;
-      margin: 20px auto;
-      cursor: pointer;
-      transition: transform 0.1s;
-      border-radius: 50%;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-    }
-    #cookie:active {
-      transform: scale(0.95);
-    }
-    #season {
-      font-size: 1.8em;
-      margin: 10px;
-      color: #4169e1;
-      font-style: italic;
     }
     h1 {
-      font-size: 2.5em;
-      margin: 10px 0;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      font-size: 4.5rem;
+      margin: 20px 0;
+      background: linear-gradient(45deg, #d84315, #ffb300);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: none;
+      animation: titleGlow 4s infinite alternate;
     }
-    #score {
-      font-size: 3em;
-      margin: 10px 0;
-      color: #d2691e;
-      font-weight: bold;
+    @keyframes titleGlow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
     }
-    #cps {
-      font-size: 1.5em;
-      margin: 10px 0;
-      color: #8b4513;
+    #cookie {
+      width: 320px;
+      height: 320px;
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 20px 50px var(--shadow);
+      transition: transform 0.1s;
+      filter: drop-shadow(0 0 30px var(--gold));
+      animation: float 6s ease-in-out infinite;
     }
-    #milkMain {
-      font-size: 1.2em;
-      color: #4169e1;
-      font-style: italic;
+    #cookie:active { transform: scale(0.92); }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
     }
-    .upgrades {
+    #score { font-size: 4rem; font-weight: bold; color: var(--accent); margin: 15px; }
+    #cps { font-size: 2rem; color: #8d6e63; }
+    #milkMain { font-size: 1.6rem; color: var(--milk); font-style: italic; }
+
+    .shop {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 12px;
-      max-width: 1400px;
-      margin: 20px auto;
+      gap: 18px;
+      margin: 30px auto;
+      max-width: 1300px;
     }
-    button {
-      font-size: 16px;
-      font-family: inherit;
-      padding: 12px 20px;
-      background: #8b4513;
-      color: white;
-      border: none;
-      border-radius: 12px;
+    .building, .upgrade {
+      background: white;
+      border: 4px solid var(--button);
+      border-radius: 20px;
+      padding: 18px;
+      width: 220px;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      min-width: 160px;
+      transition: all 0.3s;
+      box-shadow: 0 8px 20px var(--shadow);
     }
-    button:hover:not(:disabled) {
-      background: #a0522d;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    .building:hover, .upgrade:hover {
+      transform: translateY(-10px) scale(1.05);
+      border-color: var(--accent);
+      box-shadow: 0 15px 30px var(--shadow);
     }
-    button:disabled {
-      background: #ccc;
+    .building:disabled, .upgrade:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
     }
-    #statsBtn, #reset {
-      background: #4169e1;
-      min-width: auto;
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 18px;
-    }
-    #reset {
-      background: #dc143c;
-    }
-    #reset:hover {
-      background: #b22222;
-    }
-    #statsModal, #achPopup {
-      display: none;
+    .season-badge {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
+      top: 20px;
+      right: 20px;
+      font-size: 1.8rem;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 50px;
       z-index: 100;
-      backdrop-filter: blur(5px);
     }
-    #statsContent {
+    .particle {
       position: absolute;
+      color: var(--gold);
+      font-weight: bold;
+      font-size: 32px;
+      pointer-events: none;
+      animation: rise 1.5s forwards;
+      text-shadow: 2px 2px 4px #000;
+    }
+    @keyframes rise {
+      to { transform: translateY(-200px); opacity: 0; }
+    }
+    #achPopup {
+      position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: white;
+      background: linear-gradient(45deg, gold, orange);
       color: black;
-      padding: 30px;
-      border-radius: 20px;
-      max-width: 400px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-      text-align: left;
+      padding: 40px;
+      border-radius: 30px;
+      font-size: 2.5rem;
+      font-weight: bold;
+      box-shadow: 0 0 80px gold;
+      z-index: 1000;
+      animation: pop 4s forwards;
     }
-    #statsContent h3 {
-      text-align: center;
-      margin-top: 0;
+    @keyframes pop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+      15% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      85% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
     }
-    #statsContent button {
-      width: 100%;
-      margin-top: 20px;
+    button.control {
+      background: var(--button);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 5px 15px var(--shadow);
     }
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-      10% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-      90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-      100% { opacity: 0; transform
+    button.control:hover { background: var(--button-hover); }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Kavoon&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game">
+    <h1>Cookie Clicker</h1>
+    <div id="seasonBadge" class="season-badge">Normal Season</div>
+    <div id="score">0 cookies</div>
+    <div id="cps">0.0 cookies/sec</div>
+    <div id="milkMain">Milk: 0%</div>
+
+    <img id="cookie" src="https://upload.wikimedia.org/wikipedia/commons/9/93/Chocolate_chip_cookie_in_Bakersfield%2C_CA%2C_2.jpg" alt="Cookie">
+
+    <div class="shop" id="buildings"></div>
+    <div class="shop" id="upgrades"></div>
+
+    <div>
+      <button class="control" onclick="openStats()">Stats</button>
+      <button class="control" onclick="saveGame()">Save</button>
+      <button class="control" onclick="loadGame()">Load</button>
+      <button class="control" onclick="if(confirm('Reset all progress?')) location.reload()">Reset</button>
+    </div>
+  </div>
+
+  <div id="achPopup"></div>
+
+  <script>
+    // === REVAMPED COOKIE CLICKER 2025 ===
+    const Game = {
+      cookies: 0,
+      totalCookies: 0,
+      clickPower: 1,
+      cps: 0,
+      milk: 0,
+      achievements: 0,
+      buildings: [
+        {name:"Cursor",base:15,cps:0.1,owned:0},
+        {name:"Grandma",base:100,cps:1,owned:0},
+        {name:"Farm",base:1100,cps:8,owned:0},
+        {name:"Mine",base:12000,cps:47,owned:0},
+        {name:"Factory",base:130000,cps:260,owned:0},
+        {name:"Bank",base:1400000,cps:1400,owned:0},
+        {name:"Temple",base:20000000,cps:7800,owned:0},
+        {name:"Wizard Tower",base:330000000,cps:44000,owned:0},
+        {name:"Shipment",base:5100000000,cps:260000,owned:0},
+        {name:"Alchemy Lab",base:75000000000,cps:1600000,owned:0}
+      ],
+      upgrades: [
+        {name:"Reinforced Finger",cost:100,effect:()=>{Game.clickPower*=2},bought:false},
+        {name:"Carpal Tunnel Cream",cost:500,effect:()=>{Game.clickPower*=2},bought:false},
+        {name:"Ambidextrous",cost:10000,effect:()=>{Game.clickPower*=2},bought:false},
+        {name:"Thousand Fingers",cost:100000,effect:()=>{Game.clickPower+=Game.buildings[0].owned*0.2},bought:false},
+        {name:"Forwards from Grandma",cost:1000,effect:()=>{Game.buildings[1].cps*=2},bought:false},
+        {name:"Steel-plated Rolling Pins",cost:5000,effect:()=>{Game.buildings[1].cps*=2},bought:false},
+        {name:"Lubricated Dentures",cost:50000,effect:()=>{Game.buildings[1].cps*=3},bought:false},
+        {name:"Prune Juice",cost:1000000,effect:()=>{Game.buildings[1].cps*=2},bought:false}
+      ],
+      achievements: [
+        {name:"Wake and bake",desc:"Bake 1 cookie",goal:()=>Game.totalCookies>=1,unlocked:false},
+        {name:"Casual baking",desc:"Bake 1,000 cookies",goal:()=>Game.totalCookies>=1000,unlocked:false},
+        {name:"Cookie monster",desc:"Bake 1 million cookies",goal:()=>Game.totalCookies>=1e6,unlocked:false},
+        {name:"Click",desc:"Have 1 cursor",goal:()=>Game.buildings[0].owned>=1,unlocked:false},
+        {name:"Grandma's cookies",desc:"Have 1 grandma",goal:()=>Game.buildings[1].owned>=1,unlocked:false},
+        {name:"One with everything",desc:"Own at least 1 of every building",goal:()=>Game.buildings.every(b=>b.owned>=1),unlocked:false}
+      ],
+      lastTime: performance.now(),
+      season: "normal"
+    };
+
+    function format(num) {
+      if (num < 1e6) return Math.floor(num).toLocaleString();
+      const exp = Math.floor(Math.log10(num)/3);
+      const units = ['','M','B','T','Qa','Qi','Sx','Sp'];
+      return (num/Math.pow(1000,exp)).toFixed(2) + units[exp];
+    }
+
+    function popParticle(text) {
+      const p = document.createElement("div");
+      p.className = "particle";
+      p.style.left = (event.clientX + Math.random()*60 - 30) + "px";
+      p.style.top = (event.clientY - 50) + "px";
+      p.textContent = text;
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1500);
+    }
+
+    function checkSeason() {
+      const d = new Date();
+      const month = d.getMonth();
+      const day = d.getDate();
+      if (month === 11 && day >= 20) { Game.season = "christmas"; }
+      else if (month === 9) { Game.season = "halloween"; }
+      else if (month === 1) { Game.season = "valentines"; }
+      else if (month === 3 && day >= 1 && day <= 15) { Game.season = "easter"; }
+      else { Game.season = "normal"; }
+
+      document.body.className = Game.season;
+      document.getElementById("seasonBadge").textContent = 
+        Game.season.charAt(0).toUpperCase() + Game.season.slice(1) + " Season";
+    }
+
+    function clickCookie() {
+      Game.cookies += Game.clickPower;
+      Game.totalCookies += Game.clickPower;
+      popParticle("+" + format(Game.clickPower));
+      update();
+    }
+
+    function buyBuilding(i) {
+      const b = Game.buildings[i];
+      const cost = b.base * Math.pow(1.15, b.owned);
+      if (Game.cookies >= cost) {
+        Game.cookies -= cost;
+        b.owned++;
+        update();
+      }
+    }
+
+    function buyUpgrade(i) {
+      const u = Game.upgrades[i];
+      if (!u.bought && Game.cookies >= u.cost) {
+        Game.cookies -= u.cost;
+        u.bought = true;
+        u.effect();
+        update();
+      }
+    }
+
+    function checkAchievements() {
+      Game.achievements.forEach(a => {
+        if (!a.unlocked && a.goal()) {
+          a.unlocked = true;
+          Game.milk += 4;
+          Game.achievements++;
+          const popup = document.getElementById("achPopup");
+          popup.innerHTML = `Achievement Unlocked!<br><br>${a.name}<br>${a.desc}`;
+          popup.style.display = "block";
+          setTimeout(() => popup.style.display = "none", 4000);
+        }
+      });
+    }
+
+    function update() {
+      document.getElementById("score").textContent = format(Game.cookies) + " cookies";
+      Game.cps = Game.buildings.reduce((s,b) => s + b.owned * b.cps, 0) * (1 + Game.milk * 0.02);
+      document.getElementById("cps").textContent = format(Game.cps) + " per second";
+      document.getElementById("milkMain").textContent = `Milk: ${Game.milk}% (+${(Game.milk*2)}% CPS)`;
+
+      const bDiv = document.getElementById("buildings");
+      bDiv.innerHTML = "";
+      Game.buildings.forEach((b,i) => {
+        const cost = b.base * Math.pow(1.15, b.owned);
+        const el = document.createElement("div");
+        el.className = "building";
+        el.innerHTML = `<strong>${b.name}</strong><br>
+                        ${b.owned} owned<br>
+                        Cost: ${format(cost)}<br>
+                        ${b.cps} → ${format(b.cps * (1 + Game.milk * 0.02))} CPS`;
+        el.onclick = () => buyBuilding(i);
+        if (Game.cookies < cost) el.disabled = true;
+        bDiv.appendChild(el);
+      });
+
+      const uDiv = document.getElementById("upgrades");
+      uDiv.innerHTML = "";
+      Game.upgrades.forEach((u,i) => {
+        if (!u.bought) {
+          const el = document.createElement("div");
+          el.className = "upgrade";
+          el.style.background = "#fff0e0";
+          el.innerHTML = `<strong>${u.name}</strong><br>Cost: ${format(u.cost)}`;
+          el.onclick = () => buyUpgrade(i);
+          if (Game.cookies < u.cost) el.disabled = true;
+          uDiv.appendChild(el);
+        }
+      });
+
+      checkAchievements();
+    }
+
+    function gameLoop() {
+      const now = performance.now();
+      const delta = (now - Game.lastTime) / 1000;
+      Game.cookies += Game.cps * delta;
+      Game.totalCookies += Game.cps * delta;
+      Game.lastTime = now;
+      update();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function saveGame() {
+      const save = {
+        cookies: Game.cookies,
+        totalCookies: Game.totalCookies,
+        clickPower: Game.clickPower,
+        buildings: Game.buildings.map(b => ({owned: b.owned})),
+        upgrades: Game.upgrades.map(u => ({bought: u.bought})),
+        achievements: Game.achievements.map(a => ({unlocked: a.unlocked}))
+      };
+      localStorage.setItem("ccRevamp2025", JSON.stringify(save));
+      alert("Game saved!");
+    }
+
+    function loadGame() {
+      const saved = localStorage.getItem("ccRevamp2025");
+      if (saved) {
+        const d = JSON.parse(saved);
+        Game.cookies = d.cookies || 0;
+        Game.totalCookies = d.totalCookies || 0;
+        Game.clickPower = d.clickPower || 1;
+        d.buildings?.forEach((b,i) => Game.buildings[i].owned = b.owned || 0);
+        d.upgrades?.forEach((u,i) => {
+          if (u.bought && !Game.upgrades[i].bought) {
+            Game.upgrades[i].bought = true;
+            Game.upgrades[i].effect();
+          }
+        });
+        d.achievements?.forEach((a,i) => {
+          if (a.unlocked) {
+            Game.achievements[i].unlocked = true;
+            Game.milk += 4;
+            Game.achievements++;
+          }
+        });
+        update();
+      }
+    }
+
+    function openStats() {
+      alert(`Stats\nCookies baked: ${format(Game.totalCookies)}\nBuildings owned: ${Game.buildings.reduce((s,b)=>s+b.owned,0)}\nAchievements: ${Game.achievements.filter(a=>a.unlocked).length}/6\nMilk: ${Game.milk}%`);
+    }
+
+    document.getElementById("cookie").onclick = clickCookie;
+    checkSeason();
+    setInterval(checkSeason, 60000);
+    update();
+    Game.lastTime = performance.now();
+    requestAnimationFrame(gameLoop);
+  </script>
+</body>
+</html>
